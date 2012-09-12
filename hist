@@ -36,9 +36,9 @@ center = (bins[:-1]+bins[1:])/2.0
 
 def display(args):
     for i in xrange(len(hist)):
-        output = "%e %e" % (center[i], hist[i])
+        output = "%e %i" % (center[i], hist[i])
         if args.uncertainty:
-            output += " %e" % numpy.sqrt(hist[i])
+            output += " %.6f" % numpy.sqrt(hist[i])
         print output
 
 if args.gnuplot:
