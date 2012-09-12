@@ -32,14 +32,17 @@ else:
     bins = args.bins
 
 hist, bins = numpy.histogram(values, bins=bins)
-if not args.gnuplot and args.logscale_y:
-    hist = numpy.log10(hist)
 
 center = (bins[:-1]+bins[1:])/2.0
 
 def display(args):
     for i in xrange(len(hist)):
-        output = "%e %i" % (center[i], hist[i])
+        if not args.gnuplot and args.logscale_y:
+            if hist[i] == 0:
+                continue
+            output = "%e %e" % (center[i], numpy.log10(hist[i]))
+        else:
+            output = "%e %i" % (center[i], hist[i])
         if args.uncertainty:
             output += " %.6f" % numpy.sqrt(hist[i])
         print output
