@@ -72,6 +72,7 @@ $ hist random.dat -u
 ```
 $ hist random.dat -u -g | gnuplot -p
 ```
+![screenshot](https://raw.github.com/SamChill/hist/gh-pages/screenshot.png)
 
 
 
