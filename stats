@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from sys import stderr, exit
+import fileinput
 
 class Accumulator:
     def __init__(self, compact=False):
@@ -97,20 +99,28 @@ class Accumulator:
 
 def stats(args):
     acc = Accumulator()
-    for filename in args.files:
-        f = open(filename)
+    for line in fileinput.input(args.files):
+        fields = line.split()
+        if len(fields) < args.field:
+            stderr.write('error: %s line %i: has fewer than %i fields\n' %
+                    (fileinput.filename(),fileinput.lineno(),args.field))
+            exit(1)
 
-        for line in f:
-            fields = line.split()
-            x = float(fields[args.field])
-            if args.min <= x <= args.max:
-                acc.push(x)
-            if acc.N%args.every == 0 and acc.N > 0:
-                print 'N: %i' % acc.N,
-                acc.describe_short()
+        x = fields[args.field-1]
+        try:
+            x = float(x)
+        except:
+            stderr.write('warning: %s line %i: "%s" is not a valid number\n' 
+                    % (fileinput.filename(),fileinput.lineno(),x)) 
+            continue
+        if args.min <= x <= args.max:
+            acc.push(x)
+        if args.every > 0 and acc.N%args.every == 0 and acc.N > 0:
+            print 'N: %i' % acc.N,
+            acc.describe_short()
 
-        f.close()
-    acc.describe()
+    if acc.N != 0:
+        acc.describe()
 
 def main():
     import argparse
@@ -129,12 +139,11 @@ def main():
             help='print estimate every N values')
 
 
-    parser.add_argument('files', metavar='FILES', nargs='+')
+    parser.add_argument('files', metavar='FILES', nargs='*')
 
     args = parser.parse_args()
 
     stats(args)
-
 
 
 if __name__ == '__main__':
