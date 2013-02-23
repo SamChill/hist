@@ -131,8 +131,8 @@ def main():
             help='minimum value to consider', default=float("-inf"))
     parser.add_argument('-n', '--max', type=float, 
             help='maximum value to consider', default=float("inf"))
-    parser.add_argument('--field', type=int, 
-            help='which field to consider', default=0)
+    parser.add_argument('-f', '--field', type=int, 
+            help='which field to consider', default=1)
     parser.add_argument('-s', '--seperator', type=str,
             help='field seperator character (default: white space)')
     parser.add_argument('-e','--every', metavar='N', default=0, type=int,
