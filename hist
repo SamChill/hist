@@ -2,6 +2,7 @@
 import numpy
 import fileinput
 import argparse
+import math
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-n', '--number-of-bins', dest='bins', type=int, 
@@ -11,6 +12,8 @@ parser.add_argument('-w', '--bin-width', type=float, help='bin width',
 parser.add_argument('-g', '--gnuplot', help='gnuplot output', 
                     action='store_true', default=False)
 parser.add_argument('-ly', '--logscale-y', help='set logscale for y', 
+                    action='store_true', default=False)
+parser.add_argument('-lx', '--logscale-x', help='set logscale for x', 
                     action='store_true', default=False)
 parser.add_argument('-l', '--lines', help='use lines', 
                     action='store_true', default=False)
@@ -25,11 +28,16 @@ for line in fileinput.input(args.files):
 
 values = numpy.array(values)
 
+minval = min(values)
+maxval = max(values)
 if args.bin_width > 0:
-    bins = numpy.arange(min(values), max(values)+args.bin_width, 
-                        args.bin_width)
+    nbins = (maxval-minval)/args.bin_width
 else:
-    bins = args.bins
+    nbins = args.bins
+if args.logscale_x:
+    bins = numpy.logspace(math.log(minval,10), math.log(maxval,10), nbins+1)
+else:
+    bins = numpy.linspace(minval, maxval, nbins+1)
 
 hist, bins = numpy.histogram(values, bins=bins)
 
@@ -50,6 +58,10 @@ def display(args):
 if args.gnuplot:
     if args.logscale_y:
         print 'set logscale y'
+    if args.logscale_x:
+        print 'set logscale x'
+    if args.logscale_x and args.logscale_y:
+        print 'set logscale xy'
     if not args.uncertainty:
         if args.lines:
             print "plot '-' u 1:2 w lines notitle"
