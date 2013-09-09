@@ -3,6 +3,7 @@ import numpy
 import fileinput
 import argparse
 import math
+from sys import exit, stderr
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-n', '--number-of-bins', dest='bins', type=int, 
@@ -24,7 +25,16 @@ args = parser.parse_args()
 
 values = []
 for line in fileinput.input(args.files):
-    values.append(float(line))
+    try:
+        x = float(line)
+    except ValueError:
+        filename = fileinput.filename()
+        lineno = fileinput.lineno()
+        msg = 'floating point conversion error: %s line %i: %s' % (filename, lineno, line)
+        stderr.write(msg)
+        exit(1)
+    values.append(x)
+
 
 values = numpy.array(values)
 
