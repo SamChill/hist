@@ -6,6 +6,10 @@ import math
 from sys import exit, stderr
 
 parser = argparse.ArgumentParser()
+parser.add_argument('-d', '--density', dest='density', 
+                    default=False, action='store_true')
+parser.add_argument('--min', dest='min', default=None, type=float)
+parser.add_argument('--max', dest='max', default=None, type=float)
 parser.add_argument('-n', '--number-of-bins', dest='bins', type=int, 
                     help='number of bins', default=10)
 parser.add_argument('-w', '--bin-width', type=float, help='bin width',
@@ -38,8 +42,16 @@ for line in fileinput.input(args.files):
 
 values = numpy.array(values)
 
-minval = min(values)
-maxval = max(values)
+if args.min:
+    minval = args.min
+else:
+    minval = min(values)
+
+if args.max:
+    maxval = args.max
+else:
+    maxval = max(values)
+
 if args.bin_width > 0:
     nbins = (maxval-minval)/args.bin_width
 else:
@@ -49,7 +61,7 @@ if args.logscale_x:
 else:
     bins = numpy.linspace(minval, maxval, nbins+1)
 
-hist, bins = numpy.histogram(values, bins=bins)
+hist, bins = numpy.histogram(values, bins=bins, density=args.density)
 
 center = (bins[:-1]+bins[1:])/2.0
 
@@ -60,7 +72,10 @@ def display(args):
                 continue
             output = "%e %e" % (center[i], numpy.log10(hist[i]))
         else:
-            output = "%e %i" % (center[i], hist[i])
+            if args.density:
+                output = "%e %e" % (center[i], hist[i])
+            else:
+                output = "%e %i" % (center[i], hist[i])
         if args.uncertainty:
             output += " %.6f" % numpy.sqrt(hist[i])
         print output
