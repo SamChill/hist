@@ -16,6 +16,8 @@ parser.add_argument('-w', '--bin-width', type=float, help='bin width',
                     default=0.0)
 parser.add_argument('-g', '--gnuplot', help='gnuplot output', 
                     action='store_true', default=False)
+parser.add_argument('-t', '--gnuplot-terminal', help='gnuplot plotting terminal', type=str, 
+                    default='')
 parser.add_argument('-ly', '--logscale-y', help='set logscale for y', 
                     action='store_true', default=False)
 parser.add_argument('-lx', '--logscale-x', help='set logscale for x', 
@@ -81,6 +83,8 @@ def display(args):
         print output
 
 if args.gnuplot:
+    if len(args.gnuplot_terminal) != 0:
+        print 'set term %s' % args.gnuplot_terminal
     if args.logscale_y:
         print 'set logscale y'
     if args.logscale_x:
