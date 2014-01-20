@@ -11,7 +11,7 @@ parser.add_argument('-d', '--density', dest='density',
 parser.add_argument('--min', dest='min', default=None, type=float)
 parser.add_argument('--max', dest='max', default=None, type=float)
 parser.add_argument('-n', '--number-of-bins', dest='bins', type=int, 
-                    help='number of bins', default=10)
+                    help='number of bins', default=None)
 parser.add_argument('-w', '--bin-width', type=float, help='bin width',
                     default=0.0)
 parser.add_argument('-g', '--gnuplot', help='gnuplot output', 
@@ -57,7 +57,11 @@ else:
 if args.bin_width > 0:
     nbins = (maxval-minval)/args.bin_width
 else:
-    nbins = args.bins
+    if args.bins is None:
+        # So called "Rice Rule".
+        nbins = numpy.ceil(2.0*len(values)**(1.0/3.0))
+    else:
+        nbins = args.bins
 if args.logscale_x:
     bins = numpy.logspace(math.log(minval,10), math.log(maxval,10), nbins+1)
 else:
