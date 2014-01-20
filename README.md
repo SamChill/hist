@@ -87,7 +87,8 @@ $ hist random.dat -u -l -ly -g | gnuplot -p
 
 ### Usage
 ```
-usage: hist [-h] [-n BINS] [-w BIN_WIDTH] [-g] [-ly] [-l] [-u]
+usage: hist [-h] [-d] [--min MIN] [--max MAX] [-n BINS] [-w BIN_WIDTH] [-g]
+            [-t GNUPLOT_TERMINAL] [-ly] [-lx] [-l] [-u]
             [FILE [FILE ...]]
 
 positional arguments:
@@ -95,12 +96,18 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
+  -d, --density
+  --min MIN
+  --max MAX
   -n BINS, --number-of-bins BINS
                         number of bins
   -w BIN_WIDTH, --bin-width BIN_WIDTH
                         bin width
   -g, --gnuplot         gnuplot output
+  -t GNUPLOT_TERMINAL, --gnuplot-terminal GNUPLOT_TERMINAL
+                        gnuplot plotting terminal
   -ly, --logscale-y     set logscale for y
+  -lx, --logscale-x     set logscale for x
   -l, --lines           use lines
   -u, --uncertainty     calculate uncertainty
 ```
